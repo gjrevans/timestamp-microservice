@@ -6,18 +6,11 @@ var server = express();
 
 var port = process.env.PORT || 8000;
 
-// Listen on the provided port
-server.listen(port, function () {
-  console.log('Listening on port ' + port)
-})
-
 // Serve a static index page if no params are provided
 server.get('/', function(req, res) {
-    var fileName = path.join(__dirname, 'index.html');
-    res.sendFile(fileName, function(err){
+    res.sendFile(path.join(__dirname, 'index.html'), function(err){
         if(err) {
-            res.writeHead(err.status);
-            res.end();
+            console.log(err.status);
         }
     });
 });
@@ -39,10 +32,15 @@ server.get('/:date', function (req, res) {
             unix: newDate.format("X"),
             natural: newDate.format("MMMM D, YYYY")
         });
+    } else {
+        res.json({
+            unix: null,
+            natural: null
+        });
     }
+});
 
-    res.json({
-        unix: null,
-        natural: null
-    });
+// Listen on the provided port
+server.listen(port, function () {
+  console.log('Listening on port ' + port)
 });
