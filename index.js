@@ -6,31 +6,33 @@ var server = express();
 
 var port = process.env.PORT || 8000;
 
+server.use(express.static(__dirname + '/public'));
+
 // Serve a static index page if no params are provided
 server.get('/', function(req, res) {
-    res.sendFile(path.join(__dirname, 'index.html'), function(err){
+    res.sendFile('index.html', function(err){
         if(err) {
             console.log(err.status);
         }
     });
 });
 
-server.get('/:date', function (req, res) {
+server.get('/:date', function(req,res) {
     var date = req.params.date;
+    var myDate;
 
-    // Try to parse the date as a natural data value
-    var newDate = moment(date, "MMMM DD, YYYY");
-
-    // Then if date is invalid, try to parse as unix
-    if(!newDate.isValid()){
-        newDate = moment.unix(date);
+    // Check if date a number greater than 0
+    if(parseInt(date) > 0) {
+        myDate = moment.unix(date);
+    } else {
+        myDate = moment(date, "MMMM DD, YYYY");
     }
 
-    // If the date is now valid, send it back, otherwise return null object
-    if(newDate.isValid()){
+    // Use moment.js isValid function to check if the date is valid
+    if(myDate.isValid()) {
         res.json({
-            unix: newDate.format("X"),
-            natural: newDate.format("MMMM D, YYYY")
+            unix: myDate.format("X"),
+            natural: myDate.format("MMMM DD, YYYY")
         });
     } else {
         res.json({
@@ -42,5 +44,5 @@ server.get('/:date', function (req, res) {
 
 // Listen on the provided port
 server.listen(port, function () {
-  console.log('Listening on port ' + port)
+    console.log('Listening on port ' + port)
 });
