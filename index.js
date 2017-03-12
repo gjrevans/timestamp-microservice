@@ -1,11 +1,15 @@
+"use strict";
+
+// Import our needed packages & create the express server
 var express = require('express');
+let favicon = require('serve-favicon');
 var path = require('path');
 var moment = require('moment');
 
 var server = express();
 
-var port = process.env.PORT || 8000;
-
+// Serve our Static Files
+server.use(favicon(__dirname + '/public/favicon.ico'));
 server.use(express.static(__dirname + '/public'));
 
 // Serve a static index page if no params are provided
@@ -43,6 +47,7 @@ server.get('/:date', function(req,res) {
 });
 
 // Listen on the provided port
+var port = process.env.PORT || 8000;
 server.listen(port, function () {
     console.log('Listening on port ' + port)
 });
